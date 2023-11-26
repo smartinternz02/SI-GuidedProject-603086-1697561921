@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veggie Classifier</title>
+</head>
+<body>
+    <h1>Veggie Classifier</h1>
+    <form action="/predict" method="post" enctype="multipart/form-data">
+        <label for="file">Choose an image:</label>
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Predict</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            
+            // Create a FormData object and append the selected file to it
+            const formData = new FormData(this);
+            
+            // Send a POST request to the Flask server
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            // Parse the JSON response
+            const result = await response.json();
+
+            // Display the result
+            document.getElementById('result').innerHTML = `<p>Prediction: ${result.class}</p>`;
+            console.log('Probabilities:', result.probabilities);
+        });
+    </script>
+</body>
+</html>
